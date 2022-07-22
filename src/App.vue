@@ -11,8 +11,8 @@
           <button class="play" v-if="!isPlaying" @click="play">Play</button>
           <button class="pause" v-else @click="pause">Pause</button>
           <button class="next" @click="next">Next</button>
-          <button class="prev" @click="volDown">Volume -</button>
-          <button class="prev" @click="volUp">Volume +</button>
+          <button class="volume-btn" @click="volDown">Volume -</button>
+          <button class="volume-btn" @click="volUp">Volume +</button>
         </div>
       </section>
       <section class="playlist">
@@ -22,11 +22,13 @@
           {{ song.title }} - {{ song.artist }}
         </button>
       </section>
+
     </main>
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'app',
   data() {
@@ -46,8 +48,11 @@ export default {
           src: require('./assets/deaf-kev-invincible.mp3')
         }
       ],
-      player: new Audio()
+      player: new Audio(),
     }
+  },
+  components: {
+
   },
   methods: {
     play(song) {
@@ -91,11 +96,21 @@ export default {
       this.play(this.current);
     },
     volUp() {
-      this.player.volume += 0.1
+      if(this.player.volume < 1.0) {
+        this.player.volume += 0.1
+        this.player.volume = this.player.volume.toFixed(1);
+      } else {
+        console.log("Maximum volume level reached")
+      }
       console.log("Volume:", this.player.volume)
     },
     volDown() {
-      this.player.volume -= 0.1
+      if(this.player.volume > 0.05) {
+        this.player.volume -= 0.1
+        this.player.volume = this.player.volume.toFixed(1);
+      } else {
+        console.log("Minimum volume level reached")
+      }
       console.log("Volume:", this.player.volume)
     }
   },
@@ -185,6 +200,16 @@ button:hover {
   border-radius: 6px;
   color: #FFF;
   background-color: #FF5858;
+}
+
+.volume-btn {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 20px;
+  margin: 0px 15px;
+  border-radius: 6px;
+  color: #FFF;
+  background-color: #0626b3;
 }
 
 .playlist {
